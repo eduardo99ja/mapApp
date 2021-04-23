@@ -12,7 +12,7 @@ const puntoInicial = {
 export const MapaPage = () => {
   const mapaDiv = useRef()
 
-  const [mapa, setMapa] = useState()
+  const mapa = useRef()
   const [cords, setCords] = useState(puntoInicial)
 
   useEffect(() => {
@@ -22,20 +22,20 @@ export const MapaPage = () => {
       center: [puntoInicial.lng, puntoInicial.lat],
       zoom: puntoInicial.zoom,
     })
-    setMapa(map)
+    mapa.current = map
   }, [])
 
   useEffect(() => {
-    mapa?.on('move', () => {
-      const { lng, lat } = mapa.getCenter()
+    mapa.current?.on('move', () => {
+      const { lng, lat } = mapa.current.getCenter()
       setCords({
         lng: lng.toFixed(4),
         lat: lat.toFixed(4),
-        zoom: mapa.getZoom().toFixed(2),
+        zoom: mapa.current.getZoom().toFixed(2),
       })
     })
-    return mapa?.off('move')
-  }, [mapa])
+    return mapa.current?.off('move')
+  }, [])
 
   return (
     <>
