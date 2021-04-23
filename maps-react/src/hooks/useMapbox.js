@@ -19,6 +19,16 @@ export const useMapbox = puntoInicial => {
   const mapa = useRef()
   const [cords, setCords] = useState(puntoInicial)
 
+  //funcion para agregar marcadores
+  const agregarMarcador = useCallback(ev => {
+    const { lng, lat } = ev.lngLat
+    const marker = new mapboxgl.Marker()
+    marker.id = v4()
+    marker.setLngLat([lng, lat]).addTo(mapa.current).setDraggable(true)
+
+    marcadores.current[marker.id] = marker
+  }, [])
+
   useEffect(() => {
     var map = new mapboxgl.Map({
       container: mapaDiv.current,
@@ -42,17 +52,14 @@ export const useMapbox = puntoInicial => {
   }, [])
   //agregar marcadores al hacer click
   useEffect(() => {
-    mapa.current?.on('click', ev => {
-      const { lng, lat } = ev.lngLat
-      const marker = new mapboxgl.Marker()
-      marker.id = v4()
-      marker.setLngLat([lng, lat]).addTo(mapa.current).setDraggable(true)
-
-      marcadores.current[marker.id] = marker
-    })
+    // mapa.current?.on('click', ev => {
+    //   agregarMarcador(ev)
+    // })
+    mapa.current?.on('click', agregarMarcador)
     return mapa.current?.off('move')
-  }, [])
+  }, [agregarMarcador])
   return {
+    agregarMarcador,
     cords,
     setRef,
     marcadores,
