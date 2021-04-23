@@ -5,14 +5,15 @@ mapboxgl.accessToken =
   'pk.eyJ1IjoiYXBvZGFjYSIsImEiOiJja251bHg4bXEwYzRjMnVsZ2U2aThmcmFuIn0.kKKzJPQ8nvrT984RbPfdUw'
 
 const puntoInicial = {
-  lng: 5,
-  lat: 34,
-  zoom: 10,
+  lng: -99.5308,
+  lat: 19.4,
+  zoom: 13,
 }
 export const MapaPage = () => {
   const mapaDiv = useRef()
 
-  const [mapa, setMapa] = useState(null)
+  const [mapa, setMapa] = useState()
+  const [cords, setCords] = useState(puntoInicial)
 
   useEffect(() => {
     var map = new mapboxgl.Map({
@@ -24,8 +25,23 @@ export const MapaPage = () => {
     setMapa(map)
   }, [])
 
+  useEffect(() => {
+    mapa?.on('move', () => {
+      const { lng, lat } = mapa.getCenter()
+      setCords({
+        lng: lng.toFixed(4),
+        lat: lat.toFixed(4),
+        zoom: mapa.getZoom().toFixed(2),
+      })
+    })
+    return mapa?.off('move')
+  }, [mapa])
+
   return (
     <>
+      <div className='info__cords'>
+        lng: {cords.lng} | lat: {cords.lat} | zoom: {cords.zoom}
+      </div>
       <div ref={mapaDiv} className='map-container'></div>
     </>
   )
