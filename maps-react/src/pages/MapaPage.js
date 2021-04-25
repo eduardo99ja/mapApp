@@ -1,7 +1,6 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 
-import {  useMapbox } from '../hooks/useMapbox'
-
+import { useMapbox } from '../hooks/useMapbox'
 
 const puntoInicial = {
   lng: -99.5308,
@@ -9,7 +8,13 @@ const puntoInicial = {
   zoom: 13,
 }
 export const MapaPage = () => {
-  const {setRef, cords } = useMapbox(puntoInicial)
+  const { setRef, cords, nuevoMarcador$ } = useMapbox(puntoInicial)
+
+  useEffect(() => {
+    nuevoMarcador$.subscribe(marcador => {
+      console.log(marcador)
+    })
+  }, [nuevoMarcador$])
 
   return (
     <>
